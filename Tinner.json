@@ -1,0 +1,15 @@
+{
+  "name": "Tinner",
+  "version": "1",
+  "items": [],
+  "environments": [],
+  "brunoConfig": {
+    "version": "1",
+    "name": "Tinner",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ]
+  }
+}
