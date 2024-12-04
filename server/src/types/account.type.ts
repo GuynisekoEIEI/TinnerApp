@@ -1,10 +1,15 @@
 import Elysia, { Static, t } from "elysia"
-import { _userAndToken } from "./user.type"
+import { _user, } from "./user.type"
 import { _register } from "./register.type"
 
 export const _login = t.Object({
     username: t.String(),
     password: t.String()
+})
+
+export const _userAndToken = t.Object({
+    user: _user,
+    token: t.String(),
 })
 
 export const AccountDto = new Elysia().model({

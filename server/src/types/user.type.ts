@@ -23,10 +23,7 @@ export const _user = t.Object({
     //followwes: profile[]
     //followwing: profile[]
 })
-export const _userAndToken = t.Object({
-    user: _user,
-    token: t.String(),
-})
+
 
 const _userPagination = t.Object({
     ..._pagination.properties,
@@ -34,6 +31,7 @@ const _userPagination = t.Object({
     min_age: t.Optional(t.Number()),
     max_age: t.Optional(t.Number()),
     looking_for: t.Optional(t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')]))
+
 })
 
 export const _updateProfile = t.Omit(_profile, ['id', 'username', 'updated_at', 'created_at', 'last_active', 'age'])

@@ -1,8 +1,9 @@
+
 import mongoose from "mongoose"
 import { IUserDocument, IUserModel } from "../interfaces/user.interface"
-import { register } from "../types/account.type"
 import { calculateAge } from "../helpers/date.helper"
 import { user } from "../types/user.type"
+import { register } from "../types/register.type"
 
 const schema = new mongoose.Schema<IUserDocument, IUserModel>({
     username: { type: String, required: true, unique: true },
