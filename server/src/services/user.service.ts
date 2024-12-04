@@ -3,6 +3,7 @@ import { updateProfile, _userPagination, _userPaginator, user, } from './../type
 import { IUserDocument } from '../interfaces/user.interface'
 import { QueryHelper } from '../helpers/query.helper'
 import { User } from '../model/user.model'
+import { $ } from 'bun'
 
 
 export const UserService = {
@@ -25,12 +26,18 @@ export const UserService = {
         }
     },
 
-    getByUserName: function (username: string): Promise<user> {
-        throw new Error('not implement')
-    },
+    // getByUserName: async function (username: string): Promise<user> {
+    //     const user = await User.findOne({ username }).exec()
+    //     if (user)
+    //         return user.toUser()
+    //     throw new Error(`username: "${username}" not found !! `)
+    // },
 
-    updateProfile: function (newProfile: updateProfile, user_id: string): Promise<user> {
-        throw new Error('not implement')
+    updateProfile: async function (newProfile: updateProfile, user_id: string): Promise<user> {
+        const user = await User.findByIdAndUpdate(user_id, { $set: newProfile }, { new: true, runValidators: true })
+        if (user)
+            return user.toUser()
+        throw new Error('Something went wrong , try again later !!')
     }
 }
 
