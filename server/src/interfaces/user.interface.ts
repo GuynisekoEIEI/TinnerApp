@@ -1,6 +1,9 @@
-import mongoose from "mongoose"
+import mongoose, { mongo } from "mongoose"
 import { register } from "../types/account.type"
 import { user } from "../types/user.type"
+
+
+
 
 type userWithOutID = Omit<user, 'id'>
 
@@ -9,8 +12,9 @@ export interface IUserDocument extends mongoose.Document, userWithOutID {
 
     verifyPassword: (password: string) => Promise<boolean>
     toUser: () => user
+
 }
 
 export interface IUserModel extends mongoose.Model<IUserDocument> {
     createUser: (registerData: register) => Promise<IUserDocument>
-}   
+}

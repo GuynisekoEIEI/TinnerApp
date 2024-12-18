@@ -1,22 +1,21 @@
 import { User } from "../model/user.model"
-import { login, } from "../types/account.type"
-import { register } from "../types/register.type"
+import { login, register } from "../types/account.type"
 import { user } from "../types/user.type"
 
 export const AccountService = {
     login: async function (loginData: login): Promise<user> {
         const user = await User.findOne({ username: loginData.username })
-            //todo
+            .populate("photos")
+            //todo:implement like and photo
             .exec()
         if (!user)
-            throw new Error("User does not exist")
+            throw new Error("User Does not exist")
         const verifyPassword = await user.verifyPassword(loginData.password)
         if (!verifyPassword)
             throw new Error("Password is incorrect")
         return user.toUser()
 
     },
-
     createNewUser: async function (registerData: register): Promise<user> {
         const user = await User.findOne({ username: registerData.username }).exec()
         if (user)

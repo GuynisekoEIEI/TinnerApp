@@ -1,11 +1,11 @@
 import Elysia, { t } from "elysia"
 
 export const example = new Elysia()
-    .get("/home", () => "Wowww", {
+    .get("/home", () => "Wowwww", {
         detail: {
             tags: ["Example"],
             summary: "Get helloworld",
-            description: "Numberone"
+            description: "Bra bra bra"
         }
     })
     .post("/about", ({ body }) => {

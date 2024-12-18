@@ -1,5 +1,4 @@
-import { _login, } from './account.type'
-import { Static, t } from "elysia"
+import { t } from "elysia"
 
 export const _register = t.Object({
     username: t.String(),
@@ -7,7 +6,5 @@ export const _register = t.Object({
     display_name: t.String(),
     date_of_birth: t.Optional(t.Date()),
     looking_for: t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')]),
-    gender: t.Optional(t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')]))
+    gender: t.Optional(t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')])),
 })
-export type register = Static<typeof _register>
-export type login = Static<typeof _login>
