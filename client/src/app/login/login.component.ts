@@ -1,20 +1,36 @@
-import { Component, signal } from '@angular/core'
+import { Component, inject, signal } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { PasswordValidator } from '../_validators/password.validator'
 import { PasswordMatchValidator } from '../_validators/password.match.validator'
 import { CommonModule } from '@angular/common'
+import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
-import { MatFormFieldModule } from "@angular/material/form-field"
+import { MatButtonModule } from '@angular/material/button'
+import { MatDatepickerModule } from '@angular/material/datepicker'
+import { MatRadioModule } from '@angular/material/radio'
+import { provideNativeDateAdapter } from '@angular/material/core'
+import { MatCardModule } from '@angular/material/card'
+import { AccountService } from '../_services/account.service'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, CommonModule, FormsModule, MatFormFieldModule, MatInputModule],
+  imports: [MatCardModule, MatRadioModule, ReactiveFormsModule, CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDatepickerModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
+  providers: [provideNativeDateAdapter()],
 })
 export class LoginComponent {
   mode: 'login' | 'register' = 'login'
   form: FormGroup
+
+  private accountService = inject(AccountService)
+  private router = inject(Router)
+  private readonly _currentYear = new Date().getFullYear()
+  errorFormServer = ''
+  readonly minDate = new Date(this._currentYear - 70, 0, 1)
+  readonly maxDate = new Date(this._currentYear - 18, 11, 31)
+  readonly startDate = new Date(this._currentYear - 18, 0, 1)
 
   errorMessages = {
     username: signal(''),
@@ -53,8 +69,16 @@ export class LoginComponent {
     }
   }
 
-  onSubmit() {
+  async onSubmit() {
+    // console.log(this.form.value)
+    if (this.mode === 'login') {
+      this.errorFormServer = await this.accountService.login(this.form.value)
+    } else {//register
+      this.errorFormServer = await this.accountService.register(this.form.value)
+    }
 
+    if (this.errorFormServer === '')
+      this.router.navigate(['/'])
   }
 
   updateErrorMessage(ctrlName: string) {
@@ -63,15 +87,17 @@ export class LoginComponent {
 
     switch (ctrlName) {
       case 'username':
-        console.log(control.hasError('required'))
+        // console.log('minLength: ' + control.hasError('minlength'))
+        // console.log('maxLength: ' + control.hasError('maxlength'))
         if (control.hasError('required'))
           this.errorMessages.username.set('required')
-        else if (control.hasError('minLength'))
+        else if (control.hasError('minlength'))
           this.errorMessages.username.set('must be at least 6 characters long')
-        else if (control.hasError('maxLength'))
+        else if (control.hasError('maxlength'))
           this.errorMessages.username.set('must be 16 characters or fewer')
         else
           this.errorMessages.username.set('')
+        // console.log(this.errorMessages.username())
         break
 
       case 'password':
@@ -104,9 +130,9 @@ export class LoginComponent {
       case 'display_name':
         if (control.hasError('required'))
           this.errorMessages.display_name.set('required')
-        else if (control.hasError('minLength'))
+        else if (control.hasError('minlength'))
           this.errorMessages.display_name.set('must be at least 3 characters long')
-        else if (control.hasError('maxLength'))
+        else if (control.hasError('maxlength'))
           this.errorMessages.display_name.set('must be 8 characters or fewer')
         else
           this.errorMessages.display_name.set('')

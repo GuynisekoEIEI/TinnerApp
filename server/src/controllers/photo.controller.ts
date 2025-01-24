@@ -1,9 +1,7 @@
 import Elysia, { error, t } from "elysia"
+import { PhotoService } from "../services/photo.service"
 import { PhotoDto } from "../types/photo.type"
 import { AuthMiddleWare, AuthPayload } from "../middlewares/auth.middleware"
-import { PhotoService } from "../services/photo.service"
-
-
 
 export const PhotoController = new Elysia({
     prefix: "api/photo",
@@ -16,12 +14,12 @@ export const PhotoController = new Elysia({
         try {
             const user_id = (Auth.payload as AuthPayload).id
             await PhotoService.setAvatar(photo_id, user_id)
-            set.status = 204 //No Content
+            set.status = "No Content"
         } catch (error) {
-            set.status = 400 //Bad Request
+            set.status = "Bad Request"
             if (error instanceof Error)
                 throw error
-            throw new Error("Something went wrong , try again later!!")
+            throw new Error("Something went wrong, try again later !!")
         }
     }, {
         detail: { summary: "Set Avatar" },
@@ -37,10 +35,10 @@ export const PhotoController = new Elysia({
             set.status = "Bad Request"
             if (error instanceof Error)
                 throw error
-            throw new Error("Something went wrong , try again later!!")
+            throw new Error("Something went wrong, try again later !!")
         }
     }, {
-        detail: { summary: "Delete Photo by photo_id" },
+        detail: { summary: "Delete photo by photo_id" },
         isSignIn: true,
         params: "photo_id"
     })
@@ -49,7 +47,7 @@ export const PhotoController = new Elysia({
         const user_id = (Auth.payload as AuthPayload).id
         return await PhotoService.getPhotos(user_id)
     }, {
-        detail: { summary: "Get Photo[] by user_id" },
+        detail: { summary: "Get photo[] by user_id" },
         isSignIn: true,
         response: "photos"
     })
@@ -62,7 +60,7 @@ export const PhotoController = new Elysia({
             set.status = "Bad Request"
             if (error instanceof Error)
                 throw error
-            throw new Error("Something went wrong , try again later!!")
+            throw new Error("Something went wrong, try again later !!")
         }
     }, {
         detail: { summary: "Upload Photo" },

@@ -1,7 +1,7 @@
 import Elysia from "elysia"
-import { AuthMiddleWare, AuthPayload } from "../middlewares/auth.middleware"
-import { UserDto } from "../types/user.type"
 import { UserService } from "../services/user.service"
+import { UserDto } from "../types/user.type"
+import { AuthMiddleWare, AuthPayload } from "../middlewares/auth.middleware"
 
 export const UserController = new Elysia({
     prefix: "/api/user",
@@ -13,14 +13,12 @@ export const UserController = new Elysia({
     .get('/all', () => {
         return {
             user: [
-                { id: '1212', name: 'Judee' },
-                { id: '8989', name: 'Mike' },
-
+                { id: '1212', name: 'a' },
+                { id: '1211', name: 'b' },
             ]
         }
-    }, {
-
     })
+
     .get('/', ({ query, Auth }) => {
         const user_id = (Auth.payload as AuthPayload).id
         return UserService.get(query, user_id)
@@ -41,8 +39,7 @@ export const UserController = new Elysia({
             if (error instanceof Error)
                 throw new Error(error.message)
             set.status = 500
-            throw new Error("Something went wrong , try again later")
-
+            throw new Error('Something went wrong, try again later')
         }
     }, {
         detail: { summary: "Update Profile" },
