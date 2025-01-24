@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core'
-import { Router } from '@angular/router'
+import { NavigationExtras, Router } from '@angular/router'
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar'
 import { throwError } from 'rxjs'
 
@@ -19,6 +19,12 @@ export class ErrorService {
     handleError(err: any) {
         if (err) {
             switch (err.status) {
+                case 400:
+                    this.snackBar.open(err.error, 'ok', this.MatSnackBarConfig)
+                    break
+                case 404:
+                    this.router.navigate(['/404'])
+                    break
                 case 500:
                 case 501:
                 case 502:
@@ -34,7 +40,13 @@ export class ErrorService {
                     if (err.error.message === 'Token Expired') {
                         this.router.navigate(['/'])
                     }
-                    this.router.navigate(['/server-error'])
+                    const navExtra: NavigationExtras = {
+                        state: {
+                            message: err.error,
+                            code: err.status
+                        }
+                    }
+                    this.router.navigate(['/server-error'], navExtra)
                     break
                 default:
                     this.snackBar.open('Something went wrong try again later', 'Close', this.MatSnackBarConfig)

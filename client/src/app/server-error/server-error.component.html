@@ -1,8 +1,8 @@
 <div class="containner">
     <div id="error">
         <div id="box"></div>
-        <h3>ERROR 500</h3>
-        <p>Things are a little <span>unstable</span> here</p>
+        <h3>ERROR {{error?.['code']}}</h3>
+        <p>{{error?.['message']}}</p>
         <p>I suggest come back later</p>
     </div>
 </div>
