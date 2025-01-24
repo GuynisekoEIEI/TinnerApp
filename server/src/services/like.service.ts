@@ -1,0 +1,50 @@
+import mongoose from "mongoose"
+import { User } from "../model/user.model"
+import { user, userPagination, userPaginator } from "../types/user.type"
+import { QueryHelper } from "../helpers/query.helper"
+
+export const LikeService = {
+    toggleLike: async function (user_id: string, target_id: string): Promise<boolean> {
+        const target = await User.findById(target_id).select("_id").exec()
+        if (!target)
+            throw new Error("Not target_id")
+        const LikeTarget = await User.findOne({
+            _id: new mongoose.Types.ObjectId(user_id),
+            following: { $elemtMatch: { $eq: target._id } }
+        }).exec()
+
+        if (LikeTarget) {
+            await User.findByIdAndUpdate(user_id, { $pull: { following: target._id } })
+            await User.findByIdAndUpdate(target_id, { $pull: { followers: user_id } })
+        } else {
+            await User.findByIdAndUpdate(user_id, { $addToSet: { following: target._id } })
+            await User.findByIdAndUpdate(target_id, { $addToSet: { followers: user_id } })
+        }
+        return true
+    },
+    getFollowers: async function (user_id: string, pagination: userPagination): Promise<userPaginator> {
+        const _query = User.findById(user_id)
+            .populate({
+                path: "followers",
+                match: { $and: QueryHelper.parseUserQuery(pagination) },
+                select: '_id username display_name photos gender introduction date_of_birth interest location',
+                populate: { path: "photos" }
+            })
+        const [docs, total] = await Promise.all([
+            _query.exec(),
+            User.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(user_id) } },
+                { $project: { count: { $size: { $ifNull: ["$followers", []] } } } }
+            ])
+        ])
+        pagination.length = total[0].count
+        let follower: user[] = []
+        return {
+            pagination: pagination,
+            items: follower
+        }
+    },
+    getFollowing: function (user_id: string, query: userPagination): Promise<userPaginator> {
+        throw new Error("Not implemented")
+    },
+}

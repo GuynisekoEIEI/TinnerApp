@@ -11,6 +11,24 @@ export const PhotoController = new Elysia({
 })
     .use(PhotoDto)
     .use(AuthMiddleWare)
+
+    .patch('/:photo_id', async ({ params: { photo_id }, set, Auth }) => {
+        try {
+            const user_id = (Auth.payload as AuthPayload).id
+            await PhotoService.setAvatar(photo_id, user_id)
+            set.status = 204 //No Content
+        } catch (error) {
+            set.status = 400 //Bad Request
+            if (error instanceof Error)
+                throw error
+            throw new Error("Something went wrong , try again later!!")
+        }
+    }, {
+        detail: { summary: "Set Avatar" },
+        isSignIn: true,
+        params: "photo_id"
+    })
+
     .delete('/:photo_id', async ({ params: { photo_id }, set }) => {
         try {
             await PhotoService.delete(photo_id)
@@ -46,9 +64,6 @@ export const PhotoController = new Elysia({
                 throw error
             throw new Error("Something went wrong , try again later!!")
         }
-
-
-
     }, {
         detail: { summary: "Upload Photo" },
         body: "upload",

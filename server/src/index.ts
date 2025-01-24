@@ -3,18 +3,20 @@ import { example } from "./controllers/example.controller"
 import { swaggerConfig } from "./configs/swagger.config"
 import { tlsConfig } from "./configs/tls.config"
 import cors from "@elysiajs/cors"
-import { mongodb } from "./configs/database.config"
-import { jwtconfig } from "./configs/jwt.config"
+import { MongoDB } from "./configs/database.config"
+import { jwtConfig } from "./configs/jwt.config"
 import { AccountController } from "./controllers/account.controller"
 import { UserController } from "./controllers/user.controller"
 import staticPlugin from "@elysiajs/static"
+import { PhotoController } from "./controllers/photo.controller"
 
 
-mongodb.connect()
+MongoDB.connect()
 
 const app = new Elysia()
+  .use(PhotoController)
   .use(cors())
-  .use(jwtconfig)
+  .use(jwtConfig)
   .use(swaggerConfig)
   //.use(example)
   .use(staticPlugin({
@@ -23,7 +25,7 @@ const app = new Elysia()
   }))
   .use(AccountController)
   .use(UserController)
-  .use(AbortController)
+
   .listen({
     port: Bun.env.PORT || 8000,
     tls: tlsConfig

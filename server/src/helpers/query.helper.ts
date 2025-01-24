@@ -1,10 +1,10 @@
 import mongoose from "mongoose"
-import { userPaginatoin } from "../types/user.type"
+import { userPagination } from "../types/user.type"
 import { IUserDocument } from "../interfaces/user.interface"
 
 export const QueryHelper = {
 
-    parseUserQuery: function (query: userPaginatoin): mongoose.FilterQuery<IUserDocument>[] {
+    parseUserQuery: function (query: userPagination): mongoose.FilterQuery<IUserDocument>[] {
         const filter: mongoose.FilterQuery<IUserDocument>[] = []
         if (query.gender && query.gender !== 'all') {
             const regEx = new RegExp(`\\b${query.gender.trim()}`, 'i')

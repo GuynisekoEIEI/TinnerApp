@@ -3,7 +3,6 @@ import { _register } from "./register.type"
 import { _pagination, CreatePagination } from "./pagination.type"
 import { _photo } from "./photo.type"
 
-
 export const _profile = t.Object({
     ...t.Omit(_register, ['password']).properties,
     id: t.String(),
@@ -20,8 +19,8 @@ export const _profile = t.Object({
 export const _user = t.Object({
     ..._profile.properties,
     //todo:implement like feature
-    //followers:profile[]
-    //following:profile[]
+    followers: t.Optional(t.Array(t.Union([t.Partial(_profile), t.String()]))),
+    following: t.Optional(t.Array(t.Union([t.Partial(_profile), t.String()]))),
 })
 
 const _userPagination = t.Object({
@@ -46,6 +45,6 @@ export const UserDto = new Elysia().model({
 
 
 export type updateProfile = Static<typeof _updateProfile>
-export type userPaginatoin = Static<typeof _userPagination>
+export type userPagination = Static<typeof _userPagination>
 export type userPaginator = Static<typeof _userPaginator>
 export type user = Static<typeof _user>

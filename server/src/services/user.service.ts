@@ -1,12 +1,12 @@
 import mongoose, { RootFilterQuery } from "mongoose"
-import { updateProfile, user, userPaginatoin, userPaginator } from "../types/user.type"
+import { updateProfile, user, userPagination, userPaginator } from "../types/user.type"
 import { IUserDocument } from "../interfaces/user.interface"
 import { QueryHelper } from "../helpers/query.helper"
 import { User } from "../model/user.model"
 
 
 export const UserService = {
-    get: async function (pagintion: userPaginatoin, user_id: string): Promise<userPaginator> {
+    get: async function (pagintion: userPagination, user_id: string): Promise<userPaginator> {
         let filter: RootFilterQuery<IUserDocument> = {
             _id: { $nin: new mongoose.Types.ObjectId(user_id) },
             $and: QueryHelper.parseUserQuery(pagintion)
