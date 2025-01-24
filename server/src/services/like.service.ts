@@ -39,12 +39,37 @@ export const LikeService = {
         ])
         pagination.length = total[0].count
         let follower: user[] = []
+        if (docs) {
+            follower = docs.followers as user[]
+        }
         return {
             pagination: pagination,
             items: follower
         }
     },
-    getFollowing: function (user_id: string, query: userPagination): Promise<userPaginator> {
-        throw new Error("Not implemented")
+    getFollowing: async function (user_id: string, pagination: userPagination): Promise<userPaginator> {
+        const _query = User.findById(user_id)
+            .populate({
+                path: "following",
+                match: { $and: QueryHelper.parseUserQuery(pagination) },
+                select: '_id username display_name photos gender introduction date_of_birth interest location',
+                populate: { path: "photos" }
+            })
+        const [docs, total] = await Promise.all([
+            _query.exec(),
+            User.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(user_id) } },
+                { $project: { count: { $size: { $ifNull: ["$following", []] } } } }
+            ])
+        ])
+        pagination.length = total[0].count
+        let following: user[] = []
+        if (docs) {
+            following = docs.followers as user[]
+        }
+        return {
+            pagination: pagination,
+            items: following
+        }
     },
 }

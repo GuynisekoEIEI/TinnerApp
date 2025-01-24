@@ -1,22 +1,19 @@
 import mongoose from "mongoose"
-import { file } from "bun"
-import { connect } from "bun"
 
 const username = Bun.env.MONGGO_DB_ID || 'your-username'
 const password = Bun.env.MONGGO_DB_PASSWORD || 'your-password'
-const db_name = Bun.env.MONGO_DB_NAME || 'TinerApp'
-
-const uri = `mongodb+srv://${username}:${password}@charuntonkh.gydkl.mongodb.net/?retryWrites=true&w=majority&appName=${db_name}`
+const db_name = Bun.env.MONGO_DBNAME || 'tinner_app'
+const uri = `mongodb+srv://${username}:${password}@cluster0.gydkl.mongodb.net/?retryWrites=true&w=majority&appName=${db_name}`
 
 export const MongoDB = {
-
     connect: async function () {
         try {
             await mongoose.connect(uri)
-            console.log('----- MongoDB connected -----')
+            console.log('---- MongoDB  Connected ----')
 
-        } catch (error) {
-            console.error('----- MongoDB connection error -----')
+        }
+        catch (error) {
+            console.error(); ('---- MongoDB Connection Error ----')
             console.error(error)
         }
     }

@@ -39,7 +39,8 @@ export const UserDto = new Elysia().model({
     pagination: t.Optional(_userPagination),
     updateProfile: _updateProfile,
     users: _userPaginator,
-    user: _user
+    user: _user,
+    target_id: t.Object({ target_id: t.String() }),
 })
 
 
